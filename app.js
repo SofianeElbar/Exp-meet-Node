@@ -7,7 +7,7 @@ const app = express();
 
 // connect to MongoDB
 const dbURI =
-  "mongodb+srv://user-portfolio:Sloufslouf84@cluster0.i2iq53o.mongodb.net/node-portfolio?retryWrites=true&w=majority";
+  "mongodb+srv://user-portfolio:<password>@cluster0.i2iq53o.mongodb.net/node-portfolio?retryWrites=true&w=majority";
 mongoose.connect(dbURI);
 // register view engine
 app.set("view engine", "ejs");
