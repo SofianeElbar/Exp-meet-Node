@@ -1,13 +1,14 @@
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const Project = require("./models/project");
 
 // express app
 const app = express();
 
 // connect to MongoDB
 const dbURI =
-  "mongodb+srv://user-portfolio:<password>@cluster0.i2iq53o.mongodb.net/node-portfolio?retryWrites=true&w=majority";
+  "mongodb+srv://user-portfolio:Sloufslouf84@cluster0.i2iq53o.mongodb.net/node-portfolio?retryWrites=true&w=majority";
 mongoose.connect(dbURI);
 // register view engine
 app.set("view engine", "ejs");
@@ -28,31 +29,48 @@ app.use(express.static("public"));
 // });
 app.use(morgan("dev"));
 
-app.get("/", (req, res) => {
-  // au lieu d'utiliser res.write() puis res.end(), express nous permet d'utiiser la méthode res.send() qui traduit automatiquement le type de contenu renvoyé au client, header, html/ text etc, ainsi que le status du code, 200, 404 etc.
-  //   res.send("<p>home page</p>");
-  //   res.sendFile("./views/index.html", { root: __dirname });
-  const blogs = [
-    {
-      title: "Yoshi finds eggs",
-      snippet: "Lorem ipsum dolor sit amet consectetur",
-    },
-    {
-      title: "Mario finds stars",
-      snippet: "Lorem ipsum dolor sit amet consectetur",
-    },
-    {
-      title: "How to defeat bowser",
-      snippet: "Lorem ipsum dolor sit amet consectetur",
-    },
-  ];
-  res.render("index", { title: "Home", blogs });
+//mongoose and mongo sandbox routes
+app.get("/add-project", (req, res) => {
+  const project = new Project({
+    title: "new project 2",
+    snippet: "about my new project",
+    body: "details of my new project",
+  });
+
+  project
+    .save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
-// app.use((req, res, next) => {
-//   console.log("another middleware");
-//   next();
-// });
+app.get("/all-projects", (req, res) => {
+  Project.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/single-project", (req, res) => {
+  Project.findById("65242202d6dfbb70d8ad6631")
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// Website routes
+app.get("/", (req, res) => {
+  res.redirect("/projects");
+});
 
 app.get("/about", (req, res) => {
   //   res.send("<p>about page</p>");
@@ -60,7 +78,19 @@ app.get("/about", (req, res) => {
   res.render("about", { title: "About" });
 });
 
-app.get("/blogs/create", (req, res) => {
+// Projects routes
+app.get("/projects", (req, res) => {
+  Project.find()
+    .sort({ createdAt: -1 })
+    .then((result) => {
+      res.render("index", { title: "All Projects", projects: result });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/project/create", (req, res) => {
   res.render("create", { title: "Create a new blog" });
 });
 //redirects

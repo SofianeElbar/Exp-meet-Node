@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const portfolioSchema = new Schema(
+const projectSchema = new Schema(
   {
     title: {
       type: String,
@@ -19,6 +19,5 @@ const portfolioSchema = new Schema(
   { timestamps: true }
 );
 
-const Portfolio = mongoose.model("Portfolio", portfolioSchema);
-module.exports = Portfolio;
-m;
+const Project = mongoose.model("Project", projectSchema);
+module.exports = Project;
