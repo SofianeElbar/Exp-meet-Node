@@ -4,13 +4,15 @@
   <body>
     <%- include('./partials/nav.ejs') %>
 
-    <div class="blogs content">
+    <div class="projects content">
       <h2>All Projects</h2>
       <!-- Ca s'appelle du server side rendering baby ! -->
 
       <% if (projects.length > 0) { %> <% projects.forEach(project => { %>
-      <h3 class="title"><%= project.title %></h3>
-      <p class="snippet"><%= project.snippet%></p>
+      <a class="single" href="/project/<%= project._id %>">
+        <h3 class="title"><%= project.title %></h3>
+        <p class="snippet"><%= project.snippet%></p>
+      </a>
       <% }) %> <% } else { %>
       <p>There are no blogs yet !</p>
       <% } %>

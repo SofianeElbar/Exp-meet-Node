@@ -18,6 +18,7 @@ app.listen(3000);
 
 // middleware & static files
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
 //Obtain details of the request with middeleware
 // app.use((req, res, next) => {
@@ -30,42 +31,42 @@ app.use(express.static("public"));
 app.use(morgan("dev"));
 
 //mongoose and mongo sandbox routes
-app.get("/add-project", (req, res) => {
-  const project = new Project({
-    title: "new project 2",
-    snippet: "about my new project",
-    body: "details of my new project",
-  });
+// app.get("/add-project", (req, res) => {
+//   const project = new Project({
+//     title: "new project 2",
+//     snippet: "about my new project",
+//     body: "details of my new project",
+//   });
 
-  project
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+//   project
+//     .save()
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
-app.get("/all-projects", (req, res) => {
-  Project.find()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// app.get("/all-projects", (req, res) => {
+//   Project.find()
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
-app.get("/single-project", (req, res) => {
-  Project.findById("65242202d6dfbb70d8ad6631")
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// app.get("/single-project", (req, res) => {
+//   Project.findById("65242202d6dfbb70d8ad6631")
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
 // Website routes
 app.get("/", (req, res) => {
@@ -90,7 +91,43 @@ app.get("/projects", (req, res) => {
     });
 });
 
-app.get("/project/create", (req, res) => {
+app.post("/projects", (req, res) => {
+  const project = new Project(req.body);
+
+  project
+    .save()
+    .then((result) => {
+      res.redirect("/projects");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/project/:id", (req, res) => {
+  const id = req.params.id;
+  Project.findById(id)
+    .then((result) => {
+      res.render("details", { project: result, title: "Project Details" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.delete("/project/:id", (req, res) => {
+  const id = req.params.id;
+  Project.findByIdAndDelete(id)
+    .then((result) => {
+      // on ne peut pas faire une simple redirection sur node lorsqu'on injecte du javascript pour écouter un évènement, il faut envoyer à la place un objet json via API au navigateur avec une propriété de redirection.
+      res.json({ redirect: "/projects" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/projects/create", (req, res) => {
   res.render("create", { title: "Create a new blog" });
 });
 //redirects
