@@ -1,15 +1,15 @@
 <html lang="en">
-  <%- include('./partials/head.ejs') %>
+  <%- include('../partials/head.ejs') %>
 
   <body>
-    <%- include('./partials/nav.ejs') %>
+    <%- include('../partials/nav.ejs') %>
 
     <div class="projects content">
       <h2>All Projects</h2>
       <!-- Ca s'appelle du server side rendering baby ! -->
 
       <% if (projects.length > 0) { %> <% projects.forEach(project => { %>
-      <a class="single" href="/project/<%= project._id %>">
+      <a class="single" href="/projects/<%= project._id %>">
         <h3 class="title"><%= project.title %></h3>
         <p class="snippet"><%= project.snippet%></p>
       </a>
@@ -17,6 +17,6 @@
       <p>There are no blogs yet !</p>
       <% } %>
     </div>
-    <%- include('./partials/footer.ejs') %>
+    <%- include('../partials/footer.ejs') %>
   </body>
 </html>
